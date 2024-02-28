@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+
+  geesefs:
+    image: your_geesefs_image
+    environment:
+        AWS_STORAGE_BUCKET_NAME: bucket_name
+        AWS_ACCESS_KEY_ID: access_key
+        AWS_SECRET_ACCESS_KEY: secret_key
+        AWS_S3_URL: s3_url
+        AWS_S3_MOUNTPOINT: /mnt
+        FUSE_ALLOW_OTHER: true # otherwise, only the user with USER_ID will be able to see the bucket content
+#        USER_ID: 1000 # defaul value
+#        GROUP_ID: 1000 # default value
+    devices:
+        - /dev/fuse
+    cap_add:
+        - SYS_ADMIN
+    privileged: true
+    volumes:
+       - type: bind
+         bind:
+           propagation: rshared
+         source: MOUNT_FOLDER
+         target: /mnt
+    restart: unless-stopped
